@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGIA - Registro de Usuario</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-sigia-green min-vh-100 d-flex align-items-center justify-content-center p-3">
+
+    <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 450px;">
+        <div class="card-body p-4 p-sm-5 text-center">
+
+            <!-- Logo Temporal (Representando el logo de SIGIA de la imagen) -->
+            <div class="logo-sigia container mb-3 position-relative">
+                <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4FKu_Lk_12IDwdtVhG00sy0eECqpKLwsuQue35Nh-g4bztiFzPNyKl14&s=10" target="_blank">
+                    <img src="sigia 1.png" class="img-fluid">
+                </a>
+            </div>
+
+            <!-- Título del Formulario -->
+            <h2 class="text-sigia-blue fw-bold mb-4 fs-3">Registro de Usuario</h2>
+
+            <!-- Formulario -->
+            <form>
+                <!-- Nombres -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                    <input type="text" class="form-control" placeholder="Nombres" required>
+                </div>
+
+                <!-- Apellidos -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                    <input type="text" class="form-control" placeholder="Apellidos" required>
+                </div>
+
+                <!-- Documento de Identidad -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-bookmark"></i></span>
+                    <input type="text" class="form-control" placeholder="Documento de identidad (solo números)" inputmode="numeric" pattern="[0-9]*" required>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+
+                <!-- Fecha de nacimiento -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                    <input type="text" class="form-control" placeholder="Fecha de nacimiento (DD/MM/AAAA)" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="input-group mb-2">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Contraseña" required>
+                </div>
+
+                <!-- Olvidé contraseña -->
+                <div class="text-start mb-4">
+                    <a href="#" class="text-sigia-blue text-decoration-none fw-semibold" style="font-size: 0.85rem;">Olvidé contraseña</a>
+                </div>
+
+                <!-- Botón Registrarse -->
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-sigia w-75 shadow-sm">Registrarse</button>
+                </div>
+
+                <!-- Enlaces Inferiores -->
+                <div class="d-flex flex-column gap-2" style="font-size: 0.9rem;">
+                    <p><a href="sigiaLogIn.html" class="text-sigia-blue-underline text-decoration-none fw-semibold mt-2">Cancelar</a></p>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -24,35 +24,48 @@
             <h2 class="text-sigia-blue fw-bold mb-4 fs-3">Registro de Usuario</h2>
 
             <!-- Formulario -->
-            <form>
-                <!-- Nombres -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                    <input type="text" class="form-control" placeholder="Nombres" required>
-                </div>
+						<form novalidate action="../index.html"> 
+							<!--Grupo nombres-->   
+							<div class="form-group">
+									<!-- Input Nombres -->
+									<div class="input-group mb-1">
+										<span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+										<input type="text" class="form-control" placeholder="Nombres" id="fname" required>
+									</div>
+									<div>
+										<!--Error-->
+										<span class="error text-start"><p></p></span>
+									</div>
+								</div>
 
                 <!-- Apellidos -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
                     <input type="text" class="form-control" placeholder="Apellidos" required>
+										<!--Error-->
+										<span class="error"></span>
                 </div>
 
                 <!-- Documento de Identidad -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-bookmark"></i></span>
-                    <input type="text" class="form-control" placeholder="Documento de identidad (solo números)" inputmode="numeric" pattern="[0-9]*" required>
+										<input type="text" class="form-control" placeholder="Documento de identidad (solo números)" required> <!--inputmode="numeric" pattern="[0-9]*" -->
+										<!--Error-->
+										<span class="error"></span>
                 </div>
 
                 <!-- Email -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                     <input type="email" class="form-control" placeholder="Email" required>
+										<!--Error-->
+										<span class="error"></span>
                 </div>
 
                 <!-- Fecha de nacimiento -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                    <input type="text" class="form-control" placeholder="Fecha de nacimiento (DD/MM/AAAA)" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+										<input type="text" class="form-control" placeholder="Fecha de nacimiento (DD/MM/AAAA)" required> <!-- onfocus="(this.type='date')" onblur="(this.type='text')-->
                 </div>
 
                 <!-- Contraseña -->
@@ -60,6 +73,7 @@
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
                     <input type="password" class="form-control" placeholder="Contraseña" required>
                 </div>
+								<!-- Repetir contraseña-->
 								<div class="input-group mb-3">
 									<span class="input-group-text"><i class="bi bi-lock"></i></span>
 									<input type="password" class= "form-control" placeholder="Repetir contraseña" require>
@@ -72,7 +86,7 @@
 
                 <!-- Botón Registrarse -->
                 <div class="mb-4">
-                    <button type="submit" class="btn btn-sigia w-75 shadow-sm">Registrarse</button>
+                    <button type="submit" class="btn btn-sigia w-75 shadow-sm" id="register">Registrarse</button>
                 </div>
 
                 <!-- Enlaces Inferiores -->
@@ -84,6 +98,8 @@
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		<!--
+		<script src="../scripts/validate.js"></script>
+		-->
 </body>
 </html>

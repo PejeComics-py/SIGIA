@@ -82,7 +82,7 @@
                 
                 <div class="card border-0 shadow-sm min-vh-100 min-vh-md-auto rounded-0 rounded-md-4 overflow-hidden position-relative bg-white pb-5">
                     
-                    <div class="card-body pt-4 px-4 text-center">
+                    <div class="card-body flex-grow-0 pt-4 px-4 text-center">
                         <h1 class="text-sigia-blue fw-bold fs-2 mb-4">Insumos</h1>
                         
                         <div class="input-group mb-3 rounded-pill border shadow-sm overflow-hidden px-2 bg-white">
@@ -102,24 +102,29 @@
                         
                         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
                             <div class="table-responsive">
-                                <table class="table table-borderless align-middle mb-0 text-center">
+                                <table class="table table-borderless align-middle mb-0 text-center" style="table-layout: fixed; width: 100%;">
+                                    <colgroup>
+                                        <col style="width: 40%;">
+                                        <col style="width: 30%;">
+                                        <col style="width: 30%;">
+                                    </colgroup>
                                     <thead class="table-light text-secondary border-bottom">
                                         <tr class="small fw-bold">
-                                            <th class="py-3 text-start ps-4">Insumo</th>
+                                            <th class="py-3">Insumo</th>
                                             <th class="py-3">Cantidad</th>
-                                            <th class="py-3 pe-4">Fecha</th>
+                                            <th class="py-3">Fecha</th>
                                         </tr>
                                     </thead>
                                     <tbody class="small fw-semibold">
                                         <tr class="border-bottom">
-                                            <td class="py-3 text-start ps-4 text-sigia-blue"><i class="bi bi-record-circle-fill text-sigia-teal me-2"></i>Fertilizante</td>
+                                            <td class="py-3 text-sigia-blue"><i class="bi bi-record-circle-fill text-sigia-teal me-2"></i>Fertilizante</td>
                                             <td class="py-3 text-secondary text-nowrap">300g <i class="bi bi-caret-right-fill text-muted small ms-1"></i></td>
-                                            <td class="py-3 text-sigia-blue pe-4">25-06</td>
+                                            <td class="py-3 text-sigia-blue">25-06</td>
                                         </tr>
                                         <tr class="border-bottom">
-                                            <td class="py-3 text-start ps-4 text-sigia-blue"><i class="bi bi-record-circle-fill text-sigia-teal me-2"></i>Fertilizante</td>
+                                            <td class="py-3 text-sigia-blue"><i class="bi bi-record-circle-fill text-sigia-teal me-2"></i>Fertilizante</td>
                                             <td class="py-3 text-secondary text-nowrap">300g <i class="bi bi-caret-right-fill text-muted small ms-1"></i></td>
-                                            <td class="py-3 text-sigia-blue pe-4">25-06</td>
+                                            <td class="py-3 text-sigia-blue">25-06</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -203,7 +208,7 @@
                     <nav class="nav nav-justified py-1">
                         <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaHomepage.html"><i class="bi bi-house-door d-block fs-4"></i><span class="small fw-bold">Home</span></a>
                         <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTasks.html"><i class="bi bi-calendar-check d-block fs-4"></i><span class="small fw-bold">Tareas</span></a>
-                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaInsumos.html"><i class="bi bi-box-seam-fill d-block fs-4"></i><span class="small fw-bold">Insumos</span></a>
+                        <a class="nav-link nav-link-sigia active py-2 text-center" href="sigiaInsumos.html"><i class="bi bi-box-seam-fill d-block fs-4"></i><span class="small fw-bold">Insumos</span></a>
                     </nav>
                 </div>
             </div>

@@ -1,22 +1,27 @@
-const form = document.querySelector("form")
-const validateName = document.getElementById("fname")
-
-function validate(field) {
-	if(!field.validity.valid) {
-		return false;
-	}
-	return true;
-}
-// Prevent from submiting 
-form.addEventListener("submit", function(e) {
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
 	e.preventDefault();
+	
+	const email = document.getElementById("email").value;
+	const password = document.getElementById("password").value
 
-	const isValid = validate(validateName);
+	try {
+		const respuesta = await fetch("http://localhost:3000/login", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email, password })
+    });
+		
+		const result = await respuesta.json();
 
-	if(isValid){
-		console.log("success!");
-	} else {
-		console.log("error");
+		if(respuesta.ok) {
+			console.log(result.mensaje);
+			window.location.href = "frontend/sigiaHomepage.html"
+		} else {
+			console.log(result.mensaje);
+		}
+	} catch(error){
+		console.error("Error en la peticion: ", error);
+		console.log("Ocurrió un error al intentar conectar con el server");
 	}
-})
+});
 

@@ -25,7 +25,7 @@
             <h2 class="text-sigia-blue fw-bold mb-4 fs-3">Ingresar o Registrarse</h2>
 
             <!-- Formulario -->
-						<form novalidate action="frontend/sigiaHomepage.html">
+						<form novalidate id="loginForm"">
                 <!-- Email -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
@@ -35,7 +35,7 @@
                 <!-- Contraseña -->
                 <div class="input-group mb-2">
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control" placeholder="Contraseña" required>
+                    <input id="password" type="password" class="form-control" placeholder="Contraseña" required>
                 </div>
 
                 <!-- Olvidé contraseña -->
@@ -57,4 +57,5 @@
         </div>
     </div>
 </body>
+<script src="scripts/validate.js"></script>
 </html>

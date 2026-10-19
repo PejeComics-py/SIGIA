@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGIA - Detalle de lote</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        /* Paleta de colores oficial de SIGIA */
+        :root {
+            --sigia-green: #88BF50;
+            --sigia-green-dark: #6da634;
+            --sigia-blue: #16558C;
+            --sigia-blue-soft: #4a7fae;
+            --sigia-blue-dark: #265077;
+            --sigia-red: #c24141;
+        }
+        .text-sigia-blue { color: var(--sigia-blue) !important; }
+
+        /* Botón de estado del lote (mismos colores que la lista de lotes) */
+        .estado-btn {
+            border: 0;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 50rem;
+            padding: 0.3rem 1.1rem;
+        }
+        .estado-riesgo   { background-color: #cf5353; }
+        .estado-optimo   { background-color: #88BF50; }
+        .estado-atencion { background-color: #d9ae3e; }
+
+        /* Panel "Cambiar estado" */
+        .estado-panel {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 200px;
+            z-index: 5;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+            padding: 0.75rem;
+        }
+        .estado-opcion {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            border: 1px solid #cfdbe8;
+            padding: 0.35rem 0.6rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--sigia-blue);
+            cursor: pointer;
+        }
+        .estado-opcion + .estado-opcion { border-top: 0; }
+        .estado-opcion:first-of-type { border-radius: 6px 6px 0 0; }
+        .estado-opcion:last-of-type  { border-radius: 0 0 6px 6px; }
+        .estado-opcion:hover { background-color: #f1f6fb; }
+        .estado-opcion input { accent-color: var(--sigia-blue); margin: 0; }
+        .estado-punto { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+        /* Formulario (modal Agregar tarea) */
+        .form-sigia label { color: var(--sigia-blue); font-weight: 700; }
+        .form-sigia .form-control, .form-sigia .form-select {
+            border-color: rgba(22, 85, 140, 0.5);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .form-sigia textarea.form-control { border-radius: 12px; }
+        .form-sigia .form-control::placeholder { color: rgba(22, 85, 140, 0.5); }
+        .form-sigia .form-control:focus, .form-sigia .form-select:focus {
+            border-color: var(--sigia-green);
+            box-shadow: 0 0 0 0.2rem rgba(136, 191, 80, 0.25);
+        }
+        .btn-sigia-solid {
+            background-color: var(--sigia-green);
+            color: #fff;
+            border: 0;
+            border-radius: 50rem;
+            font-weight: 700;
+            padding: 0.4rem 2.5rem;
+        }
+        .btn-sigia-solid:hover { background-color: var(--sigia-green-dark); color: #fff; }
+
+        /* Botón "Agregar Tarea +" */
+        .btn-sigia-outline {
+            border: 1px solid var(--sigia-green);
+            color: var(--sigia-green-dark);
+            background: #fff;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.8rem;
+        }
+
+        /* Tarjeta de tarea */
+        .task-item {
+            border: 1px solid #e4e8ec;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            color: var(--sigia-blue);
+        }
+        .task-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: none;
+            border: 0;
+            border-radius: 12px;
+            text-align: left;
+            padding: 0.8rem 1rem 0.8rem 3.2rem;
+            color: var(--sigia-blue);
+        }
+        .task-toggle:focus-visible { outline: 2px solid var(--sigia-green); outline-offset: -2px; }
+        .task-detail {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            color: var(--sigia-blue);
+        }
+        .task-detail dt { font-weight: 700; font-size: 0.8rem; }
+        .task-detail dd { margin-bottom: 0.6rem; }
+        .task-detail dd:last-child { margin-bottom: 0; }
+        .task-actions .btn-sigia-outline, .task-actions .btn-sigia-danger { min-width: 110px; }
+        .task-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            border-radius: 50rem;
+            padding: 0.15rem 0.8rem;
+        }
+        .badge-completada { background-color: var(--sigia-green); }
+        .badge-progreso   { background-color: var(--sigia-blue-dark); }
+        .badge-retrasada  { background-color: var(--sigia-red); }
+        .badge-pendiente  { background-color: var(--sigia-blue-soft); }
+
+        /* Eliminar lote */
+        .btn-sigia-danger {
+            background-color: var(--sigia-red);
+            color: #fff;
+            border: 0;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.4rem 1.4rem;
+        }
+        .btn-sigia-danger:hover { background-color: #a63434; color: #fff; }
+        .btn-sigia-danger-outline {
+            border: 1px solid var(--sigia-red);
+            color: var(--sigia-red);
+            background: #fff;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.4rem 1.4rem;
+        }
+        .btn-sigia-danger-outline:hover { background-color: var(--sigia-red); color: #fff; }
+
+        /* Navegación inferior */
+        .nav-link-sigia { color: #6c757d; }
+        .nav-link-sigia.active {
+            color: var(--sigia-blue) !important;
+            border-top: 3px solid var(--sigia-green) !important;
+        }
+    </style>
+</head>
+<body class="bg-light min-vh-100 d-flex flex-column justify-content-between">
+
+    <div class="container-fluid my-0 my-md-4 flex-grow-1 d-flex justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5 px-0 px-md-3">
+
+                <div class="card border-0 shadow-sm min-vh-100 rounded-0 rounded-md-4 overflow-hidden bg-white pb-5">
+                    <div class="card-body pt-4 px-4">
+
+                        <a href="sigiaLotes.html" class="fw-bold fs-5 text-decoration-none" style="color: var(--sigia-blue-soft);">
+                            <i class="bi bi-arrow-left me-2"></i>Lotes
+                        </a>
+
+                        <!-- Lote no encontrado -->
+                        <div id="noEncontrado" class="text-center text-secondary mt-5" hidden>
+                            <p class="mb-1">No encontramos este lote.</p>
+                            <a href="sigiaLotes.html" class="fw-bold text-sigia-blue">Volver a Lotes</a>
+                        </div>
+
+                        <div id="detalle" hidden>
+                            <!-- Encabezado: nombre, estado y última actualización -->
+                            <div class="d-flex justify-content-between align-items-start mt-4">
+                                <h1 id="nombreLote" class="text-sigia-blue fw-bold fs-2 mb-0"></h1>
+                                <div class="position-relative">
+                                    <button id="btnEstado" type="button" class="estado-btn" aria-haspopup="true" aria-expanded="false" aria-controls="panelEstado"></button>
+
+                                    <!-- Formulario: Cambiar estado -->
+                                    <form id="panelEstado" class="estado-panel" hidden>
+                                        <fieldset class="border-0 p-0 m-0">
+                                            <legend class="fs-6 fw-bold text-sigia-blue text-center mb-2">Cambiar estado</legend>
+                                            <label class="estado-opcion">
+                                                <input type="radio" name="estadoLote" value="optimo">
+                                                <span class="estado-punto" style="background-color: #88BF50;"></span>Óptimo
+                                            </label>
+                                            <label class="estado-opcion">
+                                                <input type="radio" name="estadoLote" value="atencion">
+                                                <span class="estado-punto" style="background-color: #d9ae3e;"></span>Atención
+                                            </label>
+                                            <label class="estado-opcion">
+                                                <input type="radio" name="estadoLote" value="riesgo">
+                                                <span class="estado-punto" style="background-color: #cf5353;"></span>Riesgo
+                                            </label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mt-2 fw-bold small" style="color: var(--sigia-blue-soft);">
+                                <i class="bi bi-calendar3 fs-3"></i>
+                                <div>
+                                    Última actualización:<br>
+                                    <span id="fechaLote" class="ms-3"></span>
+                                </div>
+                            </div>
+
+                            <!-- Tareas del lote -->
+                            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                                <h2 class="text-sigia-blue fw-bold fs-5 mb-0">Tareas del lote</h2>
+                                <button type="button" class="btn-sigia-outline" data-bs-toggle="modal" data-bs-target="#modalAgregarTarea">Agregar Tarea +</button>
+                            </div>
+                            <p id="avisoTarea" class="small fw-bold text-success text-center" role="status" hidden></p>
+                            <div id="listaTareas" class="d-flex flex-column gap-3"></div>
+
+                            <!-- Eliminar lote -->
+                            <div class="border-top mt-5 pt-4 text-center">
+                                <button type="button" class="btn-sigia-danger-outline" data-bs-toggle="modal" data-bs-target="#modalEliminarLote">
+                                    <i class="bi bi-trash me-1"></i>Eliminar lote
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENÚ DE NAVEGACIÓN INFERIOR (pestaña Lotes activa) -->
+    <div class="bg-white border-top shadow w-100 position-sticky bottom-0 z-3">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <nav class="nav nav-justified py-1">
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaHomepage.html">
+                            <i class="bi bi-house-door d-block fs-4"></i><span class="small fw-bold">Home</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTasks.html">
+                            <i class="bi bi-calendar-check d-block fs-4"></i><span class="small fw-bold">Tareas</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaInsumos.html">
+                            <i class="bi bi-box-seam d-block fs-4"></i><span class="small fw-bold">Insumos</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia active py-2 text-center" href="sigiaLotes.html">
+                            <i class="bi bi-grid-1x2-fill d-block fs-4"></i><span class="small fw-bold">Lotes</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: confirmar eliminación del lote -->
+    <div class="modal fade" id="modalEliminarLote" tabindex="-1" aria-labelledby="tituloEliminarLote" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered px-4">
+            <div class="modal-content border-0 rounded-4 shadow-lg text-center p-4">
+                <i class="bi bi-exclamation-triangle fs-1" style="color: var(--sigia-red);"></i>
+                <h2 id="tituloEliminarLote" class="fs-5 fw-bold text-sigia-blue mt-2">¿Eliminar <span id="nombreEliminar"></span>?</h2>
+                <p class="small text-secondary mb-4">También se eliminarán sus tareas. Esta acción no se puede deshacer.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn-sigia-outline" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmarEliminar" class="btn-sigia-danger">Sí, eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar tarea -->
+    <div class="modal fade" id="modalAgregarTarea" tabindex="-1" aria-labelledby="tituloAgregarTarea" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered px-3">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-body p-4">
+                    <h2 id="tituloAgregarTarea" class="text-sigia-blue fw-bolder text-center mb-3">Agregar tarea</h2>
+                    <form id="formTarea" class="form-sigia border rounded-3 p-3" style="border-color: rgba(22, 85, 140, 0.5) !important;" novalidate>
+                        <label for="tareaTipo" class="mb-1">Tipo de tarea *</label>
+                        <select id="tareaTipo" class="form-select mb-2" required>
+                            <option value="" selected disabled>Selecciona tipo de tarea</option>
+                            <option>Preparar terreno</option>
+                            <option>Sembrar</option>
+                            <option>Regar</option>
+                            <option>Fertilizar</option>
+                            <option>Podar</option>
+                            <option>Cosechar</option>
+                        </select>
+
+                        <label for="tareaLote" class="mb-1">Lote *</label>
+                        <select id="tareaLote" class="form-select mb-2" required></select>
+
+                        <label for="tareaResp" class="mb-1">Usuario responsable *</label>
+                        <div class="position-relative mb-2">
+                            <input id="tareaResp" type="text" class="form-control pe-5" list="listaUsuarios" placeholder="Busque usuario responsable" autocomplete="off" required>
+                            <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-sigia-blue"></i>
+                            <!-- TODO: llenar con los usuarios reales desde el backend -->
+                            <datalist id="listaUsuarios">
+                                <option value="William S."></option>
+                                <option value="Laura M."></option>
+                                <option value="Carlos R."></option>
+                            </datalist>
+                        </div>
+
+                        <label for="tareaFecha" class="mb-1">Fecha asignada *</label>
+                        <input id="tareaFecha" type="date" class="form-control mb-2" required>
+
+                        <label for="tareaInstr" class="mb-1">Instrucción *</label>
+                        <textarea id="tareaInstr" class="form-control" rows="5" maxlength="500" placeholder="Ej. Aplicar fertilizante a lote B" required></textarea>
+                        <div id="contadorInstr" class="text-end small fw-bold text-sigia-blue mb-2">0/500</div>
+
+                        <div id="errorTarea" class="text-danger small text-center mb-2" hidden>Completa todos los campos obligatorios.</div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn-sigia-solid">Guardar</button><br>
+                            <a href="#" class="small fw-bold text-sigia-blue mt-1 d-inline-block" data-bs-dismiss="modal">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* Datos de ejemplo (mismos lotes y estados que sigiaLotes.html).
+           TODO: reemplazar por una consulta al backend (scripts/server.js). */
+        const ESTADOS = {
+            riesgo:   { label: 'Riesgo' },
+            optimo:   { label: 'Óptimo' },
+            atencion: { label: 'Atención' }
+        };
+        const ESTADO_TAREA = {
+            pendiente: 'Pendiente',
+            completada: 'Completada',
+            progreso: 'En progreso',
+            retrasada: 'Retrasada'
+        };
+        const LOTES = {
+            A: { estado: 'riesgo', actualizado: '22/10/2020', tareas: [
+                { tipo: 'Preparar terreno', cuando: 'Hoy - 10:00 a.m', estado: 'completada', responsable: 'William S.', instruccion: 'Preparar terreno aplicando composta al lote A' },
+                { tipo: 'Preparar terreno', cuando: 'Hoy - 10:00 a.m', estado: 'completada', responsable: 'William S.', instruccion: 'Preparar terreno aplicando composta al lote A' },
+                { tipo: 'Preparar terreno', cuando: 'Hoy - 10:00 a.m', estado: 'completada', responsable: 'William S.', instruccion: 'Preparar terreno aplicando composta al lote A' },
+                { tipo: 'Preparar terreno', cuando: 'Hoy - 10:00 a.m', estado: 'completada', responsable: 'William S.', instruccion: 'Preparar terreno aplicando composta al lote A' }
+            ]},
+            B: { estado: 'optimo', actualizado: '22/10/2020', tareas: [
+                { tipo: 'Fertilizante', cuando: 'Hoy - 07:00 a.m', estado: 'completada', responsable: 'Laura M.', instruccion: 'Aplicar fertilizante a lote B' },
+                { tipo: 'Podar', cuando: 'Hoy - 12:00 p.m', estado: 'progreso', responsable: 'Carlos R.', instruccion: 'Podar las ramas secas del lote B' }
+            ]},
+            C: { estado: 'atencion', actualizado: '22/10/2020', tareas: [
+                { tipo: 'Regar', cuando: 'Hoy - 12:00 p.m', estado: 'progreso', responsable: 'Laura M.', instruccion: 'Regar lote C' },
+                { tipo: 'Podar', cuando: 'Ayer - 04:00 p.m', estado: 'retrasada', responsable: 'Carlos R.', instruccion: 'Podar lote C' }
+            ]},
+            D: { estado: 'atencion', actualizado: '22/10/2020', tareas: [
+                { tipo: 'Regar', cuando: 'Hoy - 02:00 p.m', estado: 'progreso', responsable: 'William S.', instruccion: 'Regar lote D' }
+            ]}
+        };
+
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        const id = (new URLSearchParams(location.search).get('lote') || 'A').toUpperCase();
+        const lote = Object.hasOwn(LOTES, id) ? LOTES[id] : null;
+
+        if (!lote) {
+            document.getElementById('noEncontrado').hidden = false;
+        } else {
+            document.getElementById('detalle').hidden = false;
+            document.title = 'SIGIA - Lote ' + id;
+            document.getElementById('nombreLote').textContent = 'Lote ' + id;
+            document.getElementById('fechaLote').textContent = lote.actualizado;
+
+            // Estado del lote + formulario "Cambiar estado"
+            const btn = document.getElementById('btnEstado');
+            const panel = document.getElementById('panelEstado');
+
+            function pintarEstado() {
+                const abierto = !panel.hidden;
+                btn.className = 'estado-btn estado-' + lote.estado;
+                btn.innerHTML = ESTADOS[lote.estado].label + ` <i class="bi bi-chevron-${abierto ? 'up' : 'right'} ms-1"></i>`;
+                btn.setAttribute('aria-label', 'Estado del lote: ' + ESTADOS[lote.estado].label);
+                btn.setAttribute('aria-expanded', abierto);
+                panel.querySelectorAll('input[name="estadoLote"]').forEach(r => r.checked = r.value === lote.estado);
+            }
+            function abrirPanel(abrir) { panel.hidden = !abrir; pintarEstado(); }
+
+            btn.addEventListener('click', e => { e.stopPropagation(); abrirPanel(panel.hidden); });
+            document.addEventListener('click', e => { if (!panel.hidden && !panel.contains(e.target)) abrirPanel(false); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && !panel.hidden) { abrirPanel(false); btn.focus(); }
+            });
+            panel.addEventListener('change', e => {
+                if (e.target.name !== 'estadoLote') return;
+                lote.estado = e.target.value;
+                const h = new Date();
+                lote.actualizado = [h.getDate(), h.getMonth() + 1, h.getFullYear()]
+                    .map((n, i) => i < 2 ? String(n).padStart(2, '0') : n).join('/');
+                document.getElementById('fechaLote').textContent = lote.actualizado;
+                // TODO: guardar en el backend (PATCH /lotes/:id) con el nuevo estado
+                abrirPanel(false);
+            });
+            pintarEstado();
+
+            let abierta = null;   // índice de la tarea expandida (una a la vez)
+
+            function pintarTareas() {
+                document.getElementById('listaTareas').innerHTML = lote.tareas.length
+                    ? lote.tareas.map((t, i) => {
+                        const abierto = abierta === i;
+                        return `
+                        <div class="task-item">
+                            <button type="button" class="task-toggle" data-i="${i}" aria-expanded="${abierto}" aria-controls="detalleTarea${i}">
+                                <span>
+                                    <span class="d-block fw-bold">${esc(t.tipo)}</span>
+                                    <span class="d-block small fw-semibold my-1">${esc(t.cuando)}</span>
+                                    <span class="task-badge badge-${t.estado}">• ${ESTADO_TAREA[t.estado]}</span>
+                                </span>
+                                <i class="bi bi-chevron-${abierto ? 'up' : 'right'} fs-5"></i>
+                            </button>
+                            ${abierto ? `
+                            <div id="detalleTarea${i}" class="px-3 pb-3">
+                                <dl class="task-detail mb-3">
+                                    <dt>Tipo de tarea</dt>
+                                    <dd>${esc(t.tipo)}</dd>
+                                    <dt>Instrucciones</dt>
+                                    <dd>${esc(t.instruccion || 'Sin instrucciones')}</dd>
+                                    <dt>Responsable</dt>
+                                    <dd>${esc(t.responsable || 'Sin asignar')}</dd>
+                                </dl>
+                                <div class="task-actions d-flex justify-content-center gap-2">
+                                    <!-- Pendiente (siguiente paso): editar y eliminar tarea -->
+                                    <button type="button" class="btn-sigia-outline" data-accion="editar" data-i="${i}"><i class="bi bi-pencil-square me-1"></i>Editar</button>
+                                    <button type="button" class="btn-sigia-danger" data-accion="eliminar" data-i="${i}"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                                </div>
+                            </div>` : ''}
+                        </div>`;
+                    }).join('')
+                    : '<p class="text-center text-secondary small">Este lote aún no tiene tareas.</p>';
+            }
+            pintarTareas();
+
+            // Expandir / contraer una tarea
+            document.getElementById('listaTareas').addEventListener('click', e => {
+                const toggle = e.target.closest('.task-toggle');
+                if (!toggle) return;
+                const i = Number(toggle.dataset.i);
+                abierta = abierta === i ? null : i;
+                pintarTareas();
+                document.querySelector(`.task-toggle[data-i="${i}"]`).focus();
+            });
+
+            // Formulario "Agregar tarea"
+            const modalTareaEl = document.getElementById('modalAgregarTarea');
+            const modalTarea = bootstrap.Modal.getOrCreateInstance(modalTareaEl);
+            const formTarea = document.getElementById('formTarea');
+            const fTipo = document.getElementById('tareaTipo');
+            const fLote = document.getElementById('tareaLote');
+            const fResp = document.getElementById('tareaResp');
+            const fFecha = document.getElementById('tareaFecha');
+            const fInstr = document.getElementById('tareaInstr');
+            const errorTarea = document.getElementById('errorTarea');
+            const aviso = document.getElementById('avisoTarea');
+            let temporizadorAviso;
+
+            fLote.innerHTML = '<option value="" selected disabled>Selecciona un lote</option>' +
+                Object.keys(LOTES).map(k => `<option value="${esc(k)}">Lote ${esc(k)}</option>`).join('');
+
+            const actualizarContador = () => document.getElementById('contadorInstr').textContent = fInstr.value.length + '/500';
+            fInstr.addEventListener('input', actualizarContador);
+            formTarea.addEventListener('input', e => e.target.classList.remove('is-invalid'));
+            formTarea.addEventListener('change', e => e.target.classList.remove('is-invalid'));
+
+            modalTareaEl.addEventListener('show.bs.modal', () => { fLote.value = id; });   // lote actual preseleccionado
+            modalTareaEl.addEventListener('hidden.bs.modal', () => {
+                formTarea.reset();
+                formTarea.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                errorTarea.hidden = true;
+                actualizarContador();
+            });
+
+            formTarea.addEventListener('submit', e => {
+                e.preventDefault();
+                const v = { tipo: fTipo.value, lote: fLote.value, responsable: fResp.value.trim(),
+                            fecha: fFecha.value, instruccion: fInstr.value.trim() };
+                const campos = [[fTipo, v.tipo], [fLote, v.lote], [fResp, v.responsable], [fFecha, v.fecha], [fInstr, v.instruccion]];
+                campos.forEach(([el, val]) => el.classList.toggle('is-invalid', !val));
+                const completo = campos.every(([, val]) => val);
+                errorTarea.hidden = completo;
+                if (!completo) return;
+
+                const h = new Date();
+                const hoy = `${h.getFullYear()}-${String(h.getMonth() + 1).padStart(2, '0')}-${String(h.getDate()).padStart(2, '0')}`;
+                const [y, m, d] = v.fecha.split('-');
+                const tarea = {
+                    tipo: v.tipo, cuando: v.fecha === hoy ? 'Hoy' : `${d}/${m}/${y}`, estado: 'pendiente',
+                    responsable: v.responsable, instruccion: v.instruccion, fecha: v.fecha
+                };
+                // TODO: guardar en el backend (POST /tareas) y usar el id que devuelva
+                LOTES[v.lote].tareas.push(tarea);
+                if (v.lote === id) pintarTareas();
+
+                aviso.textContent = `Tarea agregada al Lote ${v.lote}.`;
+                aviso.hidden = false;
+                clearTimeout(temporizadorAviso);
+                temporizadorAviso = setTimeout(() => aviso.hidden = true, 4000);
+                modalTarea.hide();
+            });
+        }
+
+        /* Eliminar lote: confirma y vuelve a la lista.
+           TODO: llamar al backend (DELETE /lotes/:id) antes de redirigir. */
+        document.getElementById('nombreEliminar').textContent = 'Lote ' + id;
+        document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
+            location.href = 'sigiaLotes.html';
+        });
+    </script>
+</body>
+</html>

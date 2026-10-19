@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGIA - Lotes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        /* Paleta de colores oficial de SIGIA */
+        :root {
+            --sigia-green: #88BF50;
+            --sigia-blue: #16558C;
+            --sigia-blue-soft: #7d9fba;
+        }
+        .text-sigia-blue { color: var(--sigia-blue) !important; }
+
+        /* Filtros (chips) */
+        .chip {
+            border: 1px solid var(--sigia-green);
+            background-color: #e6f2d8;
+            color: var(--sigia-blue-soft);
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.3rem 1.1rem;
+        }
+        .chip.active { background-color: var(--sigia-green); color: #fff; }
+
+        /* Tarjeta de lote: franja superior oscura + cuerpo según estado */
+        .lote-card {
+            display: block;
+            border-radius: 12px;
+            overflow: hidden;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+            transition: transform 0.15s;
+        }
+        .lote-card:hover { color: #fff; transform: translateY(-2px); }
+        .lote-card .lote-title { padding: 0.4rem 1rem; font-weight: 700; font-size: 1.3rem; }
+        .lote-card .lote-body { padding: 0.3rem 1rem 0.75rem; }
+        .lote-card .lote-next { font-size: 0.7rem; }
+        .lote-card .lote-update { font-size: 0.7rem; font-weight: 700; }
+
+        .estado-riesgo   { background-color: #cf5353; }
+        .estado-riesgo   .lote-title { background-color: #a32e2e; }
+        .estado-optimo   { background-color: #88BF50; }
+        .estado-optimo   .lote-title { background-color: #6da634; }
+        .estado-atencion { background-color: #d9ae3e; }
+        .estado-atencion .lote-title { background-color: #a67c2d; }
+
+        /* Formulario (modal Agregar lote) */
+        .form-sigia label { color: var(--sigia-blue); font-weight: 700; }
+        .form-sigia .form-control, .form-sigia .form-select {
+            border-color: rgba(22, 85, 140, 0.5);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .form-sigia .form-control::placeholder { color: rgba(22, 85, 140, 0.5); }
+        .form-sigia .form-control:focus, .form-sigia .form-select:focus {
+            border-color: var(--sigia-green);
+            box-shadow: 0 0 0 0.2rem rgba(136, 191, 80, 0.25);
+        }
+        .btn-sigia-solid {
+            background-color: var(--sigia-green);
+            color: #fff;
+            border: 0;
+            border-radius: 50rem;
+            font-weight: 700;
+            padding: 0.4rem 2.5rem;
+        }
+        .btn-sigia-solid:hover { background-color: #6da634; color: #fff; }
+
+        /* Navegación inferior */
+        .nav-link-sigia { color: #6c757d; }
+        .nav-link-sigia.active {
+            color: var(--sigia-blue) !important;
+            border-top: 3px solid var(--sigia-green) !important;
+        }
+    </style>
+</head>
+<body class="bg-light min-vh-100 d-flex flex-column justify-content-between">
+
+    <div class="container-fluid my-0 my-md-4 flex-grow-1 d-flex justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5 px-0 px-md-3">
+
+                <div class="card border-0 shadow-sm min-vh-100 rounded-0 rounded-md-4 overflow-hidden bg-white pb-5">
+                    <div class="card-body pt-4 px-4">
+
+                        <h1 class="text-sigia-blue fw-bold fs-2 mb-4 text-center">Lotes</h1>
+                        <h2 class="text-sigia-blue fw-bold fs-3 mb-3">Registros</h2>
+
+                        <!-- Filtros por estado -->
+                        <div id="filtros" class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                            <button type="button" class="chip active" data-filtro="todos">Todos (0)</button>
+                            <button type="button" class="chip" data-filtro="riesgo">Riesgos (0)</button>
+                            <button type="button" class="chip" data-filtro="atencion">Atención (0)</button>
+                            <button type="button" class="chip" data-filtro="optimo">Óptimo (0)</button>
+                        </div>
+
+                        <!-- Lista de lotes -->
+                        <div id="listaLotes" class="d-flex flex-column gap-3">
+
+                            <a class="lote-card estado-riesgo" data-estado="riesgo" href="sigiaLoteDetalle.html?lote=A">
+                                <div class="lote-title">Lote A</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-exclamation-triangle me-1"></i> Riesgo</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a class="lote-card estado-optimo" data-estado="optimo" href="sigiaLoteDetalle.html?lote=B">
+                                <div class="lote-title">Lote B</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-check-circle me-1"></i> Óptimo</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a class="lote-card estado-atencion" data-estado="atencion" href="sigiaLoteDetalle.html?lote=C">
+                                <div class="lote-title">Lote C</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-slash-circle me-1"></i> Atención</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a class="lote-card estado-atencion" data-estado="atencion" href="sigiaLoteDetalle.html?lote=D">
+                                <div class="lote-title">Lote D</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-slash-circle me-1"></i> Atención</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <p id="sinResultados" class="text-center text-secondary small mt-3" hidden>No hay lotes en este estado.</p>
+
+                        <div class="text-end mt-3">
+                            <a href="#" class="small fw-bold text-sigia-blue" data-bs-toggle="modal" data-bs-target="#modalAgregarLote">Agregar lote +</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENÚ DE NAVEGACIÓN INFERIOR (pestaña Lotes activa) -->
+    <div class="bg-white border-top shadow w-100 position-sticky bottom-0 z-3">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <nav class="nav nav-justified py-1">
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaHomepage.html">
+                            <i class="bi bi-house-door d-block fs-4"></i>
+                            <span class="small fw-bold">Home</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTasks.html">
+                            <i class="bi bi-calendar-check d-block fs-4"></i>
+                            <span class="small fw-bold">Tareas</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaInsumos.html">
+                            <i class="bi bi-box-seam d-block fs-4"></i>
+                            <span class="small fw-bold">Insumos</span>
+                        </a>
+                        <a class="nav-link nav-link-sigia active py-2 text-center" href="sigiaLotes.html">
+                            <i class="bi bi-grid-1x2-fill d-block fs-4"></i>
+                            <span class="small fw-bold">Lotes</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar lote -->
+    <div class="modal fade" id="modalAgregarLote" tabindex="-1" aria-labelledby="tituloAgregarLote" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered px-3">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-body p-4">
+                    <h2 id="tituloAgregarLote" class="text-sigia-blue fw-bolder text-center mb-3">Agregar lote</h2>
+                    <form id="formLote" class="form-sigia border rounded-3 p-3" style="border-color: rgba(22, 85, 140, 0.5) !important;" novalidate>
+                        <label for="loteNombre" class="mb-1">Nombre Lote *</label>
+                        <input id="loteNombre" type="text" class="form-control mb-1" maxlength="30" placeholder="Ej. Lote A o Lote 1" autocomplete="off" required>
+                        <div id="errorNombre" class="text-danger small mb-2" hidden></div>
+
+                        <label for="loteEstado" class="mb-1 mt-2">Estado *</label>
+                        <select id="loteEstado" class="form-select mb-1" required>
+                            <option value="" selected disabled>Selecciona un estado</option>
+                            <option value="optimo">Óptimo</option>
+                            <option value="atencion">Atención</option>
+                            <option value="riesgo">Riesgo</option>
+                        </select>
+                        <div id="errorEstado" class="text-danger small mb-2" hidden>Selecciona un estado.</div>
+
+                        <div class="text-center mt-4 mb-1">
+                            <button type="submit" class="btn-sigia-solid">Guardar</button><br>
+                            <a href="#" class="small fw-bold text-sigia-blue mt-1 d-inline-block" data-bs-dismiss="modal">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /*DIV con ID listaLotes*/
+        /*Necesario para operar el DIV y actualizarlo*/
+        const lista = document.getElementById('listaLotes');
+        /*Obtener botones por ID y clase. Devuelve nodeList*/
+        const chips = document.querySelectorAll('#filtros .chip');
+        /*Diccionario de nombres para los filtros*/
+        const nombres = { todos: 'Todos', riesgo: 'Riesgos', atencion: 'Atención', optimo: 'Óptimo' };
+        /*Diccionario de estados para actualizarlos de los lotes*/
+        const ESTADOS = {
+            riesgo:   { label: 'Riesgo',   icono: 'bi-exclamation-triangle' },
+            optimo:   { label: 'Óptimo',   icono: 'bi-check-circle' },
+            atencion: { label: 'Atención', icono: 'bi-slash-circle' }
+        };
+        let filtroActual = 'todos';
+        
+        /*Función que devuelve un nodeList estatico de los elementos con clase .lote-card*/
+        const tarjetas = () => [...lista.querySelectorAll('.lote-card')];
+
+        // Función actializar para filtros y tarjetas
+        function actualizar() {
+            /* Obtener el NodeList de los elementos en el div de la lista de los lotes*/
+            const todas = tarjetas();
+            /*Traversando cada elementos en nodeList*/
+            chips.forEach(c => {
+                const f = c.dataset.filtro;
+                const n = f === 'todos' ? todas.length : todas.filter(t => t.dataset.estado === f).length;
+                c.textContent = `${nombres[f]} (${n})`;
+                c.classList.toggle('active', f === filtroActual);
+            });
+            let visibles = 0;
+            todas.forEach(t => {
+                const ver = filtroActual === 'todos' || t.dataset.estado === filtroActual;
+                t.hidden = !ver;
+                if (ver) visibles++;
+            });
+            document.getElementById('sinResultados').hidden = visibles > 0;
+        }
+        chips.forEach(c => c.addEventListener('click', () => { filtroActual = c.dataset.filtro; actualizar(); }));
+
+        // Crea una tarjeta de lote (con textContent para no inyectar HTML del usuario)
+        function crearTarjeta(nombre, estado) {
+            const hora = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+                .replace(' AM', ' a.m').replace(' PM', ' p.m');
+            const a = document.createElement('a');
+            a.className = `lote-card estado-${estado}`;
+            a.dataset.estado = estado;
+            a.href = 'sigiaLoteDetalle.html?lote=' + encodeURIComponent(nombre);
+            a.innerHTML = `
+                <div class="lote-title"></div>
+                <div class="lote-body">
+                    <div class="lote-next">Siguiente tarea: Sin asignar</div>
+                    <div class="d-flex justify-content-between align-items-end mt-3">
+                        <span class="fw-bold fs-6"><i class="bi ${ESTADOS[estado].icono} me-1"></i> ${ESTADOS[estado].label}</span>
+                        <span class="lote-update">Actualización: Hoy - ${hora}</span>
+                    </div>
+                </div>`;
+            a.querySelector('.lote-title').textContent = nombre;
+            return a;
+        }
+
+        // Formulario "Agregar lote"
+        const modalEl = document.getElementById('modalAgregarLote');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const form = document.getElementById('formLote');
+        const inNombre = document.getElementById('loteNombre');
+        const inEstado = document.getElementById('loteEstado');
+        const errNombre = document.getElementById('errorNombre');
+        const errEstado = document.getElementById('errorEstado');
+
+        function limpiarForm() {
+            form.reset();
+            [inNombre, inEstado].forEach(i => i.classList.remove('is-invalid'));
+            errNombre.hidden = errEstado.hidden = true;
+        }
+        modalEl.addEventListener('shown.bs.modal', () => inNombre.focus());
+        modalEl.addEventListener('hidden.bs.modal', limpiarForm);
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const nombre = inNombre.value.trim().replace(/\s+/g, ' ');
+            const estado = inEstado.value;
+            let error = '';
+            if (!nombre) error = 'Escribe el nombre del lote.';
+            else if (tarjetas().some(t => t.querySelector('.lote-title').textContent.toLowerCase() === nombre.toLowerCase()))
+                error = 'Ya existe un lote con ese nombre.';
+
+            errNombre.textContent = error;
+            errNombre.hidden = !error;
+            inNombre.classList.toggle('is-invalid', !!error);
+            errEstado.hidden = !!estado;
+            inEstado.classList.toggle('is-invalid', !estado);
+            if (error || !estado) return;
+
+            // TODO: guardar en el backend (POST /lotes) y usar el id que devuelva
+            lista.appendChild(crearTarjeta(nombre, estado));
+            filtroActual = 'todos';
+            actualizar();
+            modal.hide();
+        });
+
+        actualizar();
+    </script>
+</body>
+</html>

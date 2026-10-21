@@ -9,6 +9,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style/style.css">
+    <link rel="shortcut icon" href="#">
 </head>
 <body class="bg-sigia-green min-vh-100 d-flex align-items-center justify-content-center p-3">
 
@@ -23,51 +24,43 @@
             <!-- Título del Formulario -->
             <h2 class="text-sigia-blue fw-bold mb-4 fs-3">Registro de Usuario</h2>
 
-            <!-- Formulario -->
-						<form novalidate action="../index.html"> 
-							<!--Grupo nombres-->   
-							<div class="form-group">
-									<!-- Input Nombres -->
-									<div class="input-group mb-3">
-										<span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-										<input type="text" class="form-control" placeholder="Nombres" id="fname" required>
-									</div>
-								</div>
+            <!-- Error message -->
+            <div class="container d-flex justify-content-center">
+                <div id="errorMensaje" class="d-none"></div> 
+            </div>
 
+            <!-- Formulario -->
+            <form novalidate id="registerForm"> 
+                <!--Grupo nombres-->   
+                <div class="form-group">
+                    <!-- Input Nombres -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                        <input type="text" class="form-control" placeholder="Nombres" id="nombres" maxlength="50" required>
+					</div>
+				</div>
                 <!-- Apellidos -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                    <input type="text" class="form-control" placeholder="Apellidos" required>
+                    <input type="text" class="form-control" placeholder="Apellidos" id="apellidos" maxlength="50" required>
                 </div>
-
-                <!-- Documento de Identidad -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="bi bi-bookmark"></i></span>
-										<input type="text" class="form-control" placeholder="Documento de identidad (solo números)" required> <!--inputmode="numeric" pattern="[0-9]*" -->
-                </div>
-
                 <!-- Email -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input type="email" class="form-control" placeholder="Email" required>
-                </div>
-
-                <!-- Fecha de nacimiento -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-										<input type="text" class="form-control" placeholder="Fecha de nacimiento (DD/MM/AAAA)" required> <!-- onfocus="(this.type='date')" onblur="(this.type='text')-->
+                    <input type="email" class="form-control" placeholder="Email" id="email" maxlength="50" required>
                 </div>
 
                 <!-- Contraseña -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control" placeholder="Contraseña" required>
+                    <input type="password" class="form-control" placeholder="Contraseña" id="contraseña" maxlength="50" required>
                 </div>
-								<!-- Repetir contraseña-->
-								<div class="input-group mb-3">
-									<span class="input-group-text"><i class="bi bi-lock"></i></span>
-									<input type="password" class= "form-control" placeholder="Repetir contraseña" require>
-								</div>
+                
+                <!-- Repetir contraseña-->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class= "form-control" placeholder="Repetir contraseña" id="rcontraseña" maxlength="50" required>
+				</div>
 
                 <!-- Olvidé contraseña -->
                 <div class="text-start mb-4">
@@ -76,7 +69,7 @@
 
                 <!-- Botón Registrarse -->
                 <div class="mb-4">
-                    <button type="submit" class="btn btn-sigia w-75 shadow-sm" id="register">Registrarse</button>
+                    <button type="submit" class="btn btn-sigia w-75 shadow-sm">Registrarse</button>
                 </div>
 
                 <!-- Enlaces Inferiores -->
@@ -86,9 +79,101 @@
             </form>
         </div>
     </div>
-    <!-- Bootstrap 5 JS Bundle -->
-		<!--
-		<script src="../scripts/validate.js"></script>
-		-->
+    <script>
+        /*Functions for scripts*/
+        function mostrarAlerta(mensaje, tipo) {
+            let icon;
+            if(tipo === "danger") {
+                icon = "bi bi-exclamation-diamond";
+            }
+
+            if(tipo === "warning") {
+                icon = "bi bi-info-circle";
+            }
+
+            if(tipo === "success") {
+                icon = "bi bi-check";
+            }
+
+            /*Show alert*/
+            const errorMensaje = document.getElementById("errorMensaje")
+            errorMensaje.className = `alert alert-${tipo} mb-3 text-center ${icon}`;
+
+            errorMensaje.innerHTML = ` ${mensaje}`;
+            /*Remove d-none class from bootstrap to make alert visible*/
+            errorMensaje.classList.remove("d-none")
+        }
+
+        function checkUserInput(nombres,apellidos,email,password,rpassword) {
+            /*Check inputs*/ 
+            if(nombres === "" || apellidos === "" || email === "" || password === "") {
+                mostrarAlerta("Faltan campos por completar", "danger")
+                return false
+            }
+            if (!nombres.match(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)) {
+                /*Show error for names*/ 
+                mostrarAlerta("No se aceptan numeros en nombres", "warning")
+                return false
+            } 
+            if(!apellidos.match(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)) {
+                /*Show error for lastnames*/ 
+                mostrarAlerta("WARN: No se aceptan numeros en apellidos", "warning")
+                return false
+            }
+            if (password !== rpassword) {
+                /*Return error for password and rpassword no matching*/
+                mostrarAlerta("WARN: Las contraseñas no coinciden","warning")
+                return false 
+            }
+            return true
+
+        } 
+
+        /*------- MAIN SCRIPT -------*/
+        /*Get submit button form by ID*/
+        const submit = document.getElementById("registerForm")
+       
+        /*Add event to submit button and wait for response*/
+        submit.addEventListener("submit", async (button_event) => {
+            /* Save the values placed inside form*/
+            const nombres = document.getElementById("nombres").value;
+            const apellidos = document.getElementById("apellidos").value;
+	        const email = document.getElementById("email").value;
+	        const password = document.getElementById("contraseña").value;
+            const rpassword = document.getElementById("rcontraseña").value;
+            /*Prevent event until something is returned*/
+            button_event.preventDefault();
+
+            /*Return if form does not comply given criteria*/
+            if (!checkUserInput(nombres,apellidos,email,password,rpassword)) {
+                return 
+            }
+
+            try {
+                /* Fetch response with a return the promise promise*/
+                // fetch(resource, response)
+                const respuesta = await fetch("http://localhost:3000/register", {                     
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombres, apellidos, email, password })
+                });
+
+                /*Wait for the server response and save response in .json()*/
+                const result = await respuesta.json();
+                if(respuesta.ok) {
+                    mostrarAlerta(result.mensaje, "success")
+                    console.log(result.mensaje);
+                    setTimeout(function() {
+                        window.location.href = "../index.html"
+                    }, 1500);
+                } else {
+                    mostrarAlerta(result.mensaje, "danger")
+                }
+            } catch(error){
+                console.error("Error en la peticion: ", error);
+                mostrarAlerta("No se pudo conectar con el servidor.", "danger")
+            }
+        });
+    </script>
 </body>
 </html>

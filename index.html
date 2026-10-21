@@ -9,6 +9,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="frontend/style/style.css">
+    <link rel="shortcut icon" href="#">
 </head>
 <body class="bg-sigia-green min-vh-100 d-flex align-items-center justify-content-center p-3">
  
@@ -16,22 +17,25 @@
     <div class="card shadow-lg border-0 rounded-4 w-100" style="max-width: 450px;">
         <div class="card-body p-4 p-sm-5 text-center">
 
-            <!-- Logo Temporal (Representando el logo de SIGIA de la imagen) -->
+            <!-- Logo -->
             <div class="logo-sigia container mb-3 position-relative">
-							<img src="icons/iconLettersSigia.png" class="img-fluid">
+                <img src="icons/iconLettersSigia.png" class="img-fluid">
             </div>
 
             <!-- Título del Formulario -->
             <h2 class="text-sigia-blue fw-bold mb-4 fs-3">Ingresar o Registrarse</h2>
 
+            <!-- Error message-->
+            <div class="container d-flex justify-content-center">
+                <div id="errorMensaje" class="d-none"></div>
+            </div>
             <!-- Formulario -->
-						<form novalidate id="loginForm"">
+			<form novalidate id="loginForm">
                 <!-- Email -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                     <input type="email" class="form-control" placeholder="Email" id="email" required>
                 </div>
-
                 <!-- Contraseña -->
                 <div class="input-group mb-2">
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
@@ -56,6 +60,70 @@
             </form>
         </div>
     </div>
+    <script>
+        /*Get submit button form by ID*/
+        const submit = document.getElementById("loginForm")
+
+        /* Error box */
+       function mostrarAlerta(mensaje, tipo) {
+            let icon;
+            if(tipo === "danger") {
+                icon = "bi bi-exclamation-diamond";
+            }
+
+            if(tipo === "warning") {
+                icon = "bi bi-info-circle";
+            }
+
+            if(tipo === "success") {
+                icon = "bi bi-check";
+            }
+
+            /*Show alert*/
+            const errorMensaje = document.getElementById("errorMensaje")
+            errorMensaje.className = `alert alert-${tipo} mb-3 text-center ${icon}`;
+
+            errorMensaje.innerHTML = ` ${mensaje}`;
+            /*Remove d-none class from bootstrap to make alert visible*/
+            errorMensaje.classList.remove("d-none")
+        }
+
+
+        /*Add event to submit button and wait for response*/
+        submit.addEventListener("submit", async (button_event) => {
+            /*Prevent event until something is returned*/
+	        button_event.preventDefault();
+
+            /* Save the values placed inside form*/
+	        const email = document.getElementById("email").value;
+	        const password = document.getElementById("password").value
+
+	        try {
+                /* Fetch response with a return the promise promise*/
+		        const respuesta = await fetch("http://localhost:3000/login", { // fetch(resource, response)
+			        method: "POST",
+			        headers: { "Content-Type": "application/json" },
+			        body: JSON.stringify({ email, password })
+                });
+                /*Wait for the server response*/
+		        const result = await respuesta.json();
+                /* Print result mensaje */
+		        if(respuesta.ok) {
+			        console.log(result.mensaje);
+                    mostrarAlerta(result.mensaje, "success");
+                    setTimeout(function() {
+                        console.log(result.mensaje);
+                    }, 1500);
+                    window.location.href = "frontend/sigiaHomepage.html"
+		        } else {
+			        console.log(result.mensaje);
+                    mostrarAlerta(result.mensaje, "danger")
+		        }
+	        } catch(error){
+		        console.error("Error en la peticion: ", error);
+                mostrarAlerta("No se pudo conectar con el servidor.", "danger")
+	        }
+        });
+    </script>
 </body>
-<script src="scripts/validate.js"></script>
 </html>

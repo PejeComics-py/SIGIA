@@ -36,7 +36,7 @@ app.post("/login", async (req,res) => {
 		}
 
 		const usuario = filas[0]
-
+   
 		const validar = await bcrypt.compare(password, usuario.contraseña);
 
 		if (validar) {
@@ -47,9 +47,10 @@ app.post("/login", async (req,res) => {
 	} catch (error){
 		console.error(error);
 		res.status(500).json({ mensaje: "Error en el server"});
-	} finally {
-		connect_db.end()
-	}
+	} finally {  
+        if (connect_db){
+            await connect_db.end()
+    }
 });
 
 app.post("/register", async (req,res) => {

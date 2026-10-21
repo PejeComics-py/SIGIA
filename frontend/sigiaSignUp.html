@@ -117,16 +117,15 @@
             } 
             if(!apellidos.match(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)) {
                 /*Show error for lastnames*/ 
-                mostrarAlerta("WARN: No se aceptan numeros en apellidos", "warning")
+                mostrarAlerta("No se aceptan numeros en apellidos", "warning")
                 return false
             }
             if (password !== rpassword) {
                 /*Return error for password and rpassword no matching*/
-                mostrarAlerta("WARN: Las contraseñas no coinciden","warning")
+                mostrarAlerta("Las contraseñas no coinciden","warning")
                 return false 
             }
             return true
-
         } 
 
         /*------- MAIN SCRIPT -------*/

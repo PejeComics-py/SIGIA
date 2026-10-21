@@ -105,16 +105,17 @@
 			        headers: { "Content-Type": "application/json" },
 			        body: JSON.stringify({ email, password })
                 });
+
                 /*Wait for the server response*/
 		        const result = await respuesta.json();
+
                 /* Print result mensaje */
 		        if(respuesta.ok) {
 			        console.log(result.mensaje);
                     mostrarAlerta(result.mensaje, "success");
                     setTimeout(function() {
-                        console.log(result.mensaje);
+                        window.location.href = "frontend/sigiaHomepage.html"
                     }, 1500);
-                    window.location.href = "frontend/sigiaHomepage.html"
 		        } else {
 			        console.log(result.mensaje);
                     mostrarAlerta(result.mensaje, "danger")

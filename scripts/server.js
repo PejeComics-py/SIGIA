@@ -50,6 +50,7 @@ app.post("/login", async (req,res) => {
 	} finally {  
         if (connect_db){
             await connect_db.end()
+        }
     }
 });
 

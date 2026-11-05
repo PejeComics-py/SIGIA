@@ -1,10 +1,5 @@
 const mysql = require("mysql2/promise");
 
-const dbCredentials = {
-	//localhost@root
-
-};
-
 async function verificarBaseDeDatos() {
     try {
         const conexionTemporal = await mysql.createConnection({

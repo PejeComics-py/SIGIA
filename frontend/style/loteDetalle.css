@@ -1,0 +1,161 @@
+/* Paleta de colores oficial de SIGIA */
+:root {
+    --sigia-green: #88BF50;
+    --sigia-green-dark: #6da634;
+    --sigia-blue: #16558C;
+    --sigia-blue-soft: #4a7fae;
+    --sigia-blue-dark: #265077;
+    --sigia-red: #c24141;
+}
+.text-sigia-blue { color: var(--sigia-blue) !important; }
+
+/* Botón de estado del lote (mismos colores que la lista de lotes) */
+.estado-btn {
+    border: 0;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 50rem;
+    padding: 0.3rem 1.1rem;
+}
+.estado-riesgo   { background-color: #cf5353; }
+.estado-optimo   { background-color: #88BF50; }
+.estado-atencion { background-color: #d9ae3e; }
+
+/* Panel "Cambiar estado" */
+.estado-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: 200px;
+    z-index: 5;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    padding: 0.75rem;
+}
+.estado-opcion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    border: 1px solid #cfdbe8;
+    padding: 0.35rem 0.6rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--sigia-blue);
+    cursor: pointer;
+}
+.estado-opcion + .estado-opcion { border-top: 0; }
+.estado-opcion:first-of-type { border-radius: 6px 6px 0 0; }
+.estado-opcion:last-of-type  { border-radius: 0 0 6px 6px; }
+.estado-opcion:hover { background-color: #f1f6fb; }
+.estado-opcion input { accent-color: var(--sigia-blue); margin: 0; }
+.estado-punto { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* Formulario (modal Agregar tarea) */
+.form-sigia label { color: var(--sigia-blue); font-weight: 700; }
+.form-sigia .form-control, .form-sigia .form-select {
+    border-color: rgba(22, 85, 140, 0.5);
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+.form-sigia textarea.form-control { border-radius: 12px; }
+.form-sigia .form-control::placeholder { color: rgba(22, 85, 140, 0.5); }
+.form-sigia .form-control:focus, .form-sigia .form-select:focus {
+    border-color: var(--sigia-green);
+    box-shadow: 0 0 0 0.2rem rgba(136, 191, 80, 0.25);
+}
+.btn-sigia-solid {
+    background-color: var(--sigia-green);
+    color: #fff;
+    border: 0;
+    border-radius: 50rem;
+    font-weight: 700;
+    padding: 0.4rem 2.5rem;
+}
+.btn-sigia-solid:hover { background-color: var(--sigia-green-dark); color: #fff; }
+
+/* Botón "Agregar Tarea +" */
+.btn-sigia-outline {
+    border: 1px solid var(--sigia-green);
+    color: var(--sigia-green-dark);
+    background: #fff;
+    border-radius: 50rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.8rem;
+}
+
+/* Tarjeta de tarea */
+.task-item {
+    border: 1px solid #e4e8ec;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    color: var(--sigia-blue);
+}
+.task-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: 0;
+    border-radius: 12px;
+    text-align: left;
+    padding: 0.8rem 1rem 0.8rem 3.2rem;
+    color: var(--sigia-blue);
+}
+.task-toggle:focus-visible { outline: 2px solid var(--sigia-green); outline-offset: -2px; }
+.task-detail {
+    background-color: #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    color: var(--sigia-blue);
+}
+.task-detail dt { font-weight: 700; font-size: 0.8rem; }
+.task-detail dd { margin-bottom: 0.6rem; }
+.task-detail dd:last-child { margin-bottom: 0; }
+.task-actions .btn-sigia-outline, .task-actions .btn-sigia-danger { min-width: 110px; }
+.task-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 50rem;
+    padding: 0.15rem 0.8rem;
+}
+.badge-completada { background-color: var(--sigia-green); }
+.badge-progreso   { background-color: var(--sigia-blue-dark); }
+.badge-retrasada  { background-color: var(--sigia-red); }
+.badge-pendiente  { background-color: var(--sigia-blue-soft); }
+
+/* Eliminar lote */
+.btn-sigia-danger {
+    background-color: var(--sigia-red);
+    color: #fff;
+    border: 0;
+    border-radius: 50rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.4rem 1.4rem;
+}
+.btn-sigia-danger:hover { background-color: #a63434; color: #fff; }
+.btn-sigia-danger-outline {
+    border: 1px solid var(--sigia-red);
+    color: var(--sigia-red);
+    background: #fff;
+    border-radius: 50rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.4rem 1.4rem;
+}
+.btn-sigia-danger-outline:hover { background-color: var(--sigia-red); color: #fff; }
+
+/* Navegación inferior */
+.nav-link-sigia { color: #6c757d; }
+.nav-link-sigia.active {
+    color: var(--sigia-blue) !important;
+    border-top: 3px solid var(--sigia-green) !important;
+}

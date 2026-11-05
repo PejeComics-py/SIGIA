@@ -1,0 +1,67 @@
+/* Paleta de colores oficial de SIGIA */
+:root {
+    --sigia-green: #88BF50;
+    --sigia-teal: #119195;
+    --sigia-blue: #16558C;
+    --sigia-green-dark: #10AB5E;
+    --sigia-blue-light: #0B7CB1;
+}
+
+/* Paleta de colores */
+.text-sigia-blue { color: var(--sigia-blue) !important; }
+.text-sigia-teal { color: var(--sigia-teal) !important; }
+.bg-sigia-green { background-color: var(--sigia-green) !important; }
+.bg-sigia-blue { background-color: var(--sigia-blue) !important; }
+
+/* Botón Flotante ('+') */
+.btn-sigia-fab {
+    background-color: var(--sigia-blue);
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(22, 85, 140, 0.4);
+    transition: transform 0.2s, background-color 0.2s;
+    border: none;
+}
+
+.btn-sigia-fab:hover {
+    background-color: var(--sigia-blue-light);
+    transform: scale(1.05);
+    color: white;
+}
+
+/* Estilos del Modal (Formulario de Registro) */
+.btn-sigia-modal-submit {
+    background-color: var(--sigia-green);
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 8px 35px;
+    border: none;
+    transition: background-color 0.2s;
+}
+.btn-sigia-modal-submit:hover {
+    background-color: var(--sigia-green-dark);
+    color: white;
+}
+
+/* Deshabilitado estilo Figma */
+.bg-figia-disabled {
+    background-color: #e9ecef !important;
+    color: var(--sigia-blue) !important;
+    font-weight: bold;
+}
+
+/* Ocultar barra de scroll */
+.scroll-hidden::-webkit-scrollbar { display: none; }
+.scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+.nav-link-sigia { color: #6c757d; }
+.nav-link-sigia.active {
+    color: var(--sigia-blue) !important;
+    border-top: 3px solid var(--sigia-green) !important;
+}
+

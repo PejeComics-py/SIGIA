@@ -1,0 +1,66 @@
+/* Paleta de colores oficial de SIGIA */
+:root {
+    --sigia-green: #88BF50;
+    --sigia-blue: #16558C;
+    --sigia-green-dark: #10AB5E;
+    --sigia-blue-light: #0B7CB1;
+}
+
+/* Paleta de colores */
+.text-sigia-blue { color: var(--sigia-blue) !important; }
+.bg-sigia-green { background-color: var(--sigia-green) !important; }
+.bg-sigia-blue { background-color: var(--sigia-blue) !important; }
+
+/* Tarjeta de clima */
+.card-clima {
+    background: var(--sigia-green);
+}
+.card-clima .clima-stat i { font-size: 1.1rem; }
+
+/* Tarjetas de tareas pendientes */
+.card-tarea {
+    border-radius: 20px;
+    background-color: white;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 1.5rem;
+}
+
+/* Tarjetas de estado de lote */
+.card-lote {
+    border-radius: 1rem;
+    color: #fff;
+    border: none;
+}
+.card-lote.riesgo { background-color: #d9534f; }
+.card-lote.optimo { background-color: var(--sigia-green); }
+
+/* Botón Flotante ('+') */
+.btn-sigia-fab {
+    background-color: var(--sigia-blue);
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(22, 85, 140, 0.4);
+    transition: transform 0.2s, background-color 0.2s;
+    border: none;
+}
+.btn-sigia-fab:hover {
+    background-color: var(--sigia-blue-light);
+    transform: scale(1.05);
+    color: white;
+}
+
+/* Ocultar barra de scroll */
+.scroll-hidden::-webkit-scrollbar { display: none; }
+.scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+.nav-link-sigia { color: #6c757d; }
+.nav-link-sigia.active {
+    color: var(--sigia-blue) !important;
+    border-top: 3px solid var(--sigia-green) !important;
+}

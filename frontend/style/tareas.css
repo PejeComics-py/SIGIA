@@ -1,0 +1,81 @@
+/* Paleta de colores oficial de SIGIA */
+:root {
+    --sigia-green: #88BF50;
+    --sigia-green-light: #9cd462;
+    --sigia-teal: #119195;
+    --sigia-blue: #16558C;
+    --sigia-blue-dark: #265077;
+    --sigia-red: #c24141;
+}
+
+/* Utilidades de color personalizadas */
+.text-sigia-blue { color: var(--sigia-blue) !important; }
+.bg-sigia-green { background-color: var(--sigia-green) !important; }
+
+/* Estructura del calendario superior */
+.day-column {
+    color: var(--sigia-blue-light);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.day-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid var(--sigia-green);
+}
+
+.day-column.active {
+    color: var(--sigia-blue) !important;
+    font-weight: bold;
+}
+
+.day-column.active .day-dot {
+    background-color: var(--sigia-green);
+}
+
+/* Estilización de las tarjetas de tareas según su estado */
+.task-card {
+    border: none;
+    border-radius: 24px;
+    color: white;
+    padding: 14px 18px;
+}
+.task-card-delayed { background-color: var(--sigia-red); }
+.task-card-progress { background-color: var(--sigia-blue-dark); }
+.task-card-completed { background-color: var(--sigia-green); }
+
+/* Línea de tiempo vertical (Timeline) */
+.timeline-container {
+    position: relative;
+}
+.timeline-line {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--sigia-red) 15%, var(--sigia-blue) 50%, var(--sigia-green) 85%);
+    z-index: 1;
+}
+.timeline-node {
+    position: relative;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 15px;
+}
+.node-delayed { background-color: var(--sigia-red); }
+.node-progress { background-color: var(--sigia-blue); }
+.node-completed { background-color: var(--sigia-green-light); }
+
+/* Ajustes de navegación activa */
+.nav-link-sigia { color: #6c757d; }
+.nav-link-sigia.active {
+    color: var(--sigia-blue) !important;
+    border-top: 3px solid var(--sigia-green) !important;
+}
+

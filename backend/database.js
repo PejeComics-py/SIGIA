@@ -2,25 +2,55 @@ const mysql = require("mysql2/promise");
 
 const dbCredentials = {
 	//localhost@root
-    host: "localhost", 
-	user: "root",
-	password: "1111",
-	database: "sigia"
+
 };
 
 async function verificarBaseDeDatos() {
     try {
-        const conexionTemporal = await mysql.createConnection(dbCredentials);
+        const conexionTemporal = await mysql.createConnection({
+            host: "localhost", 
+            user: "root",
+            password: "1111",
+        });
 
         /*Guardar respuesta de mysql en tabla*/
         const [rows] = await conexionTemporal.query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", ["sigia"]);
 
         if (rows.length === 0) {
             console.log("Base de datos no existe...");
-            await conexionTemporal.query("CREATE DATABASE sigia;");
-            
+
+            await conexionTemporal.query("CREATE DATABASE IF NOT EXISTS sigia;");
+            const db = await mysql.createConnection({
+                host: "localhost", 
+                user: "root",
+                password: "1111",
+                database: "sigia",
+            })
+            conexionTemporal.end();
+            // Crear tabla lote
+            await db.query(`
+                CREATE TABLE IF NOT EXISTS lote (
+                    lote_id int NOT NULL AUTO_INCREMENT,
+                    nombre_lote varchar(50) NOT NULL,
+                    estado_lote varchar(50) NOT NULL,
+                    PRIMARY KEY (lote_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            `);
+            // Crear tabla usuario
+            await db.query(`
+                CREATE TABLE IF NOT EXISTS usuario (
+                    usuario_id int NOT NULL AUTO_INCREMENT,
+                    nombres varchar(50) NOT NULL,
+                    apellidos varchar(50) NOT NULL,
+                    correo varchar(50) NOT NULL,
+                    contraseña varchar(255) NOT NULL,
+                    rol varchar(50) NOT NULL DEFAULT 'usuario',
+                    PRIMARY KEY (usuario_id),
+                    KEY idx_usuario (usuario_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            `);
             // Crear tabla alerta
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS alerta (
                     alerta_id int NOT NULL AUTO_INCREMENT,
                     fecha datetime DEFAULT NULL,
@@ -33,7 +63,7 @@ async function verificarBaseDeDatos() {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             // Crear tabla ganerar_alerta
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS generar_alerta (
                     usuario_id int DEFAULT NULL,
                     alerta_id int DEFAULT NULL,
@@ -44,7 +74,7 @@ async function verificarBaseDeDatos() {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             // Crear tabla gestiona
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS gestiona (
                     lote_id int NOT NULL,
                     usuario_id int NOT NULL,
@@ -55,7 +85,7 @@ async function verificarBaseDeDatos() {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             // Crear tabla insumos
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS insumos (
                     insumo_id int NOT NULL AUTO_INCREMENT,
                     tipo_insumo varchar(50) NOT NULL,
@@ -67,17 +97,8 @@ async function verificarBaseDeDatos() {
                     CONSTRAINT insumos_ibfk_1 FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
-            // Crear tabla lote
-            await conexionTemporal.query(`
-                CREATE TABLE IF NOT EXISTS lote (
-                    lote_id int NOT NULL AUTO_INCREMENT,
-                    nombre_lote varchar(50) NOT NULL,
-                    estado_lote varchar(50) NOT NULL,
-                    PRIMARY KEY (lote_id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-            `);
             //Crear tabla permisos
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS permisos (
                     permisos_id int NOT NULL,
                     permisos_name varchar(50) NOT NULL,
@@ -85,7 +106,7 @@ async function verificarBaseDeDatos() {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             //Crear tabla permisos_usuarios
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS permisos_usuario (
                     usuario_id int DEFAULT NULL,
                     permisos_id int DEFAULT NULL,
@@ -96,7 +117,7 @@ async function verificarBaseDeDatos() {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             // Crear tabla tarea
-            await conexionTemporal.query(`
+            await db.query(`
                 CREATE TABLE IF NOT EXISTS tarea (
                     tarea_id INT NOT NULL AUTO_INCREMENT,
                     tipo_tarea VARCHAR(50) NOT NULL,
@@ -110,20 +131,7 @@ async function verificarBaseDeDatos() {
                     CONSTRAINT tarea_ibfk_2 FOREIGN KEY (lote_id) REFERENCES lote (lote_id)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
-            // Crear tabla usuario
-            await conexionTemporal.query(`
-                CREATE TABLE IF NOT EXISTS usuario (
-                    usuario_id int NOT NULL AUTO_INCREMENT,
-                    nombres varchar(50) NOT NULL,
-                    apellidos varchar(50) NOT NULL,
-                    correo varchar(50) NOT NULL,
-                    contraseña varchar(255) NOT NULL,
-                    rol varchar(50) NOT NULL DEFAULT 'usuario',
-                    PRIMARY KEY (usuario_id),
-                    KEY idx_usuario (usuario_id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-            `);
-            await conexionTemporal.end();
+            await db.end();
             console.log("Base de datos creada...");
         } 
     } catch(e) {

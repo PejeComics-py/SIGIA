@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '27c08ad1-c0e6-11f1-8715-9c6b00624175:1-9';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '27c08ad1-c0e6-11f1-8715-9c6b00624175:1-14';
 
 --
 -- Table structure for table `alerta`
@@ -216,8 +216,11 @@ CREATE TABLE `tarea` (
   `tipo_tarea` varchar(50) NOT NULL,
   `instrucción` varchar(500) NOT NULL,
   `usuario_id` int DEFAULT NULL,
+  `lote_id` int DEFAULT NULL,
   PRIMARY KEY (`tarea_id`),
   KEY `usuario_id` (`usuario_id`),
+  KEY `fk_tarea_lote` (`lote_id`),
+  CONSTRAINT `fk_tarea_lote` FOREIGN KEY (`lote_id`) REFERENCES `lote` (`lote_id`),
   CONSTRAINT `tarea_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`usuario_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -247,7 +250,7 @@ CREATE TABLE `usuario` (
   `rol` varchar(50) NOT NULL DEFAULT 'usuario',
   PRIMARY KEY (`usuario_id`),
   KEY `idx_usuario` (`usuario_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,7 +259,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'LOL','whatever','maybe@gmail.com','$2b$10$fdcqfbvst4SlJaFlvNAVqeYvs6NU02YHvTTlLhhFIc3sJMbO.yAEW','usuario'),(2,'Kurt','Cobain','realKurt@gmail.com','$2b$10$kEK6Xw17kANpJ/Xp1c3MM.x/cpT4WVj2QaioQ4X5xg0JnCmxGoTIO','usuario'),(3,'myDog','mrDog','meDog@gmail.com','$2b$10$9tEXVp1zsAhuzE/LyfOrBOyPh64HTpiwNRe5N2iq0vyRD9KosSFYW','usuario'),(4,'Tom Yhorke','Your mom','jeje@gmail.com','$2b$10$I2rur4712P9oP4NNrdPxDuS/L9vzsqLzKiGMMTFcSNcHiaUxFzlA.','usuario'),(5,'mexicano','papu','papu@gmai.com','$2b$10$SexFdhpSCjI.kA54r1ARUejCJH0ecUJFlam0kn4EzFkfDYwmNxUny','usuario'),(6,'nigga','watermelon','nigga@gmail.com','$2b$10$zNkUYrk5c8XeQAHFHQXCuudCyVliyh38PSQs9Sdb5yh66ggJwdYZC','usuario'),(7,'William','Z','w@gmail.com','william','usuario');
+INSERT INTO `usuario` VALUES (1,'LOL','whatever','maybe@gmail.com','$2b$10$fdcqfbvst4SlJaFlvNAVqeYvs6NU02YHvTTlLhhFIc3sJMbO.yAEW','usuario'),(2,'Kurt','Cobain','realKurt@gmail.com','$2b$10$kEK6Xw17kANpJ/Xp1c3MM.x/cpT4WVj2QaioQ4X5xg0JnCmxGoTIO','usuario'),(3,'myDog','mrDog','meDog@gmail.com','$2b$10$9tEXVp1zsAhuzE/LyfOrBOyPh64HTpiwNRe5N2iq0vyRD9KosSFYW','usuario'),(4,'Tom Yhorke','Your mom','jeje@gmail.com','$2b$10$I2rur4712P9oP4NNrdPxDuS/L9vzsqLzKiGMMTFcSNcHiaUxFzlA.','usuario'),(5,'mexicano','papu','papu@gmai.com','$2b$10$SexFdhpSCjI.kA54r1ARUejCJH0ecUJFlam0kn4EzFkfDYwmNxUny','usuario'),(6,'nigga','watermelon','nigga@gmail.com','$2b$10$zNkUYrk5c8XeQAHFHQXCuudCyVliyh38PSQs9Sdb5yh66ggJwdYZC','usuario'),(7,'William','Z','w@gmail.com','william','usuario'),(8,'martin','luther','martin@gmail.com','$2b$10$sikVqeR3TxYbYy02sGnYr.3mDCGxjGw1l1n1I0IomhtJC4yS4yyY2','usuario');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
@@ -270,4 +273,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-22 15:13:52
+-- Dump completed on 2026-11-05 16:24:12

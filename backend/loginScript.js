@@ -15,7 +15,7 @@ function mostrarAlerta(mensaje, tipo) {
 
     /*Show alert*/
     const errorMensaje = document.getElementById("errorMensaje")
-    errorMensaje.className = `alert alert-${tipo} mb-3 text-center ${icon}`;
+    errorMensaje.className = `alert alert-${tipo} mb-4 text-center ${icon}`;
 
     errorMensaje.innerHTML = ` ${mensaje}`;
     /*Remove d-none class from bootstrap to make alert visible*/

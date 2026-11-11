@@ -41,7 +41,9 @@ async function verificarBaseDeDatos() {
                     contraseña varchar(255) NOT NULL,
                     rol varchar(50) NOT NULL DEFAULT 'usuario',
                     PRIMARY KEY (usuario_id),
-                    KEY idx_usuario (usuario_id)
+                    KEY idx_usuario (usuario_id),
+                    reset_token varchar(255) NULL,
+                    reset_expires DATETIME NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             `);
             // Crear tabla alerta
@@ -134,4 +136,6 @@ async function verificarBaseDeDatos() {
     }
 }
 
-verificarBaseDeDatos()
+module.exports = {
+    verificarBaseDeDatos
+}

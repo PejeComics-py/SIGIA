@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"node backend/database.js\" \"nodemon backend/server.js\" \"browser-sync start --server --port 8080 --files '**/*.html, **/*.css, **/*.js'\""
+    "start": "concurrently \"nodemon backend/server.js\" \"browser-sync start --proxy localhost:3000 --port 3002 --files '**/*.html, **/*.css, **/*.js'\""
   },
   "repository": {
     "type": "git",

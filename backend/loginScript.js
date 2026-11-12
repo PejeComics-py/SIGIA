@@ -37,7 +37,7 @@ submit.addEventListener("submit", async (button_event) => {
 
     try {
         /* Fetch response with a return the promise promise*/
-        const respuesta = await fetch("http://localhost:3000/login", { // fetch(resource, response)
+        const respuesta = await fetch("/login", { // fetch(resource, response)
             method: "POST",
             headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ email, password })

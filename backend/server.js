@@ -5,11 +5,13 @@ const bcrypt = require("bcryptjs"); // Encrypt using hash
 const cors = require("cors"); // Prevent html from blocking contact with scrypt
 const nodemailer = require("nodemailer");
 const crypto = require('crypto')
-const database = require('./database.js')
+const database = require('./database.js');
+const path = require("path");
 
 const app = express();
 app.use(express.json()); // Allow retrieval of JSON forms 
 app.use(cors()); // Initilalize cors
+app.use(express.static(path.join(__dirname, '../')))
 
 /* Dictionary of entries to access database*/
 const dbCredentials = {
@@ -113,15 +115,15 @@ app.post('/recuperar-password', async(req,res) => {
             // Can't do anything, google is ds
             service: 'Gmail',
             auth: {
-                user: 'sigiaEmpresa@gmail.com',
-                pass: 'contrasena123#'
+                user: 'williamsgzgames@gmail.com',
+                pass: 'rjmfccjibhycxqzg'
             }
         })
 
-        const temporal_link = `http://localhost:8080/resetPassword.html?token=${token}`
+        const temporal_link = `http://localhost:3002/frontend/resetPassword.html?token=${token}`
 
         const correo = {
-            from: 'sigiaEmpresa@gmail.com',
+            from: 'williamsgzgames@gmail.com',
             to: usuario.correo,
             subject: 'Recuperación de contraseña - SIGIA',
             html: `

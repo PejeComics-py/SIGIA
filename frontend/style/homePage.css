@@ -7,15 +7,17 @@
 }
 
 /* Paleta de colores */
-.text-sigia-blue { color: var(--sigia-blue) !important; }
+.text-sigia-blue { color: var(--sigia-blue) !important;}
 .bg-sigia-green { background-color: var(--sigia-green) !important; }
 .bg-sigia-blue { background-color: var(--sigia-blue) !important; }
+
 
 /* Tarjeta de clima */
 .card-clima {
     background: var(--sigia-green);
 }
 .card-clima .clima-stat i { font-size: 1.1rem; }
+
 
 /* Tarjetas de tareas pendientes */
 .card-tarea {
@@ -25,16 +27,15 @@
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
     padding: 1.5rem;
+    transition: transform 0.15s;
+    overflow: hidden;
+    text-decoration: none;
 }
 
-/* Tarjetas de estado de lote */
-.card-lote {
-    border-radius: 1rem;
-    color: #fff;
-    border: none;
+.card-tarea:hover {
+    color: #fff; 
+    transform: translateY(-2px); 
 }
-.card-lote.riesgo { background-color: #d9534f; }
-.card-lote.optimo { background-color: var(--sigia-green); }
 
 /* Botón Flotante ('+') */
 .btn-sigia-fab {
@@ -64,3 +65,27 @@
     color: var(--sigia-blue) !important;
     border-top: 3px solid var(--sigia-green) !important;
 }
+
+.lote-card {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    transition: transform 0.15s;
+}
+.lote-card:hover { color: #fff; transform: translateY(-2px); }
+.lote-card .lote-title { padding: 0.4rem 1rem; font-weight: 700; font-size: 1.3rem; }
+.lote-card .lote-body { padding: 0.3rem 1rem 0.75rem; }
+.lote-card .lote-next { font-size: 0.7rem; }
+.lote-card .lote-update { font-size: 0.7rem; font-weight: 700; }
+
+.estado-riesgo   { background-color: #cf5353; }
+.estado-riesgo   .lote-title { background-color: #a32e2e; }
+.estado-optimo   { background-color: #88BF50; }
+.estado-optimo   .lote-title { background-color: #6da634; }
+.estado-atencion { background-color: #d9ae3e; }
+.estado-atencion .lote-title { background-color: #a67c2d; }
+
+

@@ -1,8 +1,13 @@
-/*DIV con ID listaLotes*/
-/*Necesario para operar el DIV y actualizarlo*/
-const lista = document.getElementById('listaLotes');
+/*TODO: Configurar el script para insertar lotes con información de la base de datos al cargar la pagina*/
+/*NOTE: El flujo de trabajo seria: 
+ cargar lotes actuales en base de datos(mostar mensaje de lotes vacio en caso de no contar con inputs) > Insertar Nuevos lotes a traves de formulario en la base de datos > Cargar lotes actuales */
+
+/*--FILTROS--*/
+const listaLotes = document.getElementById('listaLotes');
 /*Obtener botones por ID y clase. Devuelve nodeList*/
-const chips = document.querySelectorAll('#filtros .chip');
+const botonesFiltros = document.querySelectorAll('#filtros .chip');
+/*Obtener objeto oculto para mostar mensaje de resultados*/
+const sinResultados = document.querySelectorAll('sinResultados');
 /*Diccionario de nombres para los filtros*/
 const nombres = { todos: 'Todos', riesgo: 'Riesgos', atencion: 'Atención', optimo: 'Óptimo' };
 /*Diccionario de estados para actualizarlos de los lotes*/
@@ -12,93 +17,158 @@ const ESTADOS = {
     atencion: { label: 'Atención', icono: 'bi-slash-circle' }
 };
 
-
+/*Filtro actual*/
 let filtroActual = 'todos';
         
-/*Función que devuelve un nodeList estatico de los elementos con clase .lote-card*/
-const tarjetas = () => [...lista.querySelectorAll('.lote-card')];
+/*Función que devuelve una lista o arreglo desde un nodelist*/
+function obtenerTarjetasDeLotes() {
+    return [...listaLotes.querySelectorAll('.lote-card')];
+};
 
-// Función actializar para filtros y tarjetas
-function actualizar() {
-    /* Obtener el NodeList de los elementos en el div de la lista de los lotes*/
-    const todas = tarjetas();
-    /*Traversando cada elementos en nodeList*/
-    chips.forEach(c => {
-        const f = c.dataset.filtro;
-        const n = f === 'todos' ? todas.length : todas.filter(t => t.dataset.estado === f).length;
-        c.textContent = `${nombres[f]} (${n})`;
-        c.classList.toggle('active', f === filtroActual);
+/*Cuenta cuantas tarjeta pertenecen a un filtro especifico*/
+function contarTarjetasFiltro(tarjetas, filtro) {
+    if (filtro === 'todos') {
+        /*Devuelve el tamaño del array tarjetas*/
+        return tarjetas.length;
+    };
+
+    /*Deuvelve las tarjetas que coincidan el estado otorgado dentro de un array*/
+    const tarjetasConEstado = tarjetas.filter(function (tarjeta) {
+        return tarjeta.dataset.estado === filtro; 
     });
-    let visibles = 0;
-    todas.forEach(t => {
-        const ver = filtroActual === 'todos' || t.dataset.estado === filtroActual;
-        t.hidden = !ver;
-        if (ver) visibles++;
+
+    return tarjetasConEstado.length;
+};
+
+/*Devolver tarjetas con cumplen con el filtro*/
+function tarjetaConFiltro (tarjeta, filtro) {
+    /*NO IDEA*/
+    const todasTarjeta = filtro === 'todos';
+
+    const estadoCoincideConFiltro = tarjeta.dataset.estado === filtro;
+
+    return todasTarjeta || estadoCoincideConFiltro;
+};
+
+/*Actualizar el contenido de los botones y marca el boton seleccionado como activo*/
+function actualizarBotonesDeFiltro() {
+    const tarjetasLotes = obtenerTarjetasDeLotes();
+
+    /*Traversando Botones nodeList*/
+    botonesFiltros.forEach(function (boton) {
+        /*Obtener el filtro de cada boton*/
+        const filtroDelBoton = boton.dataset.filtro
+        /*Contar cuantos lotes coinciden con el filtro selecionado*/
+        const cantidadDeLotes = contarTarjetasFiltro(tarjetasLotes,filtroDelBoton)
+        /*Obtener el nombre asignado al filtro*/
+        const nombreDelFiltro = nombres[filtroDelBoton];
+
+        /*Asignar cotenido al elemmento boton*/
+        boton.textContent = `${nombreDelFiltro} (${cantidadDeLotes})`;
+
+        /*Verifica el button con el filtro actual y lo guarda en el variable como bolean */
+        const esElFiltroSeleccionado = filtroDelBoton === filtroActual;
+        /*Cambiar el estado a activo con el boton correspodiente*/
+        boton.classList.toggle('active', esElFiltroSeleccionado);
     });
-    document.getElementById('sinResultados').hidden = visibles > 0;
+};
+
+/* Ocultar tarjetas que no cumplan el filtro*/
+function mostarTarjetaFiltroSeleccionado() {
+    let cantidadDeTarjetasVisibles = 0;
+
+    /* Traversar a traves del array */
+    obtenerTarjetasDeLotes().forEach(function (tarjeta) {
+        /* Guardar las tarjetas con el filtro actual*/
+        const debeMostrarse = tarjetaConFiltro(tarjeta, filtroActual);
+
+        /*Cambiar tarjeta flag si debe mostarse*/ 
+        tarjeta.hidden = !debeMostrarse;
+
+        if (debeMostrarse) {
+            cantidadDeTarjetasVisibles++;
+        };
+    });
+
+    /* Show message of no results*/
+    if(cantidadDeTarjetasVisibles === 0) {
+        sinResultados.hidden = !(cantidadDeTarjetasVisibles === 0);
+    } else {
+        sinResultados.hidden = true;
+    };
 }
 
-chips.forEach(c => c.addEventListener('click', () => { filtroActual = c.dataset.filtro; actualizar(); }));
+/*Referescar vista*/
+function actualizarVistaDeLotes() {
+    actualizarBotonesDeFiltro();
+    mostarTarjetaFiltroSeleccionado();
+}
 
-// Crea una tarjeta de lote (con textContent para no inyectar HTML del usuario)
-function crearTarjeta(nombre, estado) {
-    const hora = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
-        .replace(' AM', ' a.m').replace(' PM', ' p.m');
-    const a = document.createElement('a');
-    a.className = `lote-card estado-${estado}`;
-    a.dataset.estado = estado;
-    a.href = 'sigiaLoteDetalle.html?lote=' + encodeURIComponent(nombre);
-    a.innerHTML = `
+/*Guardar el filtro persionado y referescar la pagina*/
+function seleccionarFiltro(boton) {
+    filtroActual = boton.dataset.filtro;
+    actualizarVistaDeLotes();
+}
+
+/*--TARJETAS--*/
+/*Obtener la hora en formato español*/
+function obtenerHoraActual() {
+    const hora = new Date().toLocaleDateString('es-CO', {
+        weekday: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    });
+    return hora;
+};
+
+/*TODO: configurar hora actual al formato del diseño en Figma*/
+function crearTarjetaLote(nombre, estado) {
+    /*Guarda la hora actual*/
+    const horaActual = obtenerHoraActual();
+    /*Guarda los valores asociados al estado*/
+    const estadoAtual = ESTADOS[estado];
+
+    /*Crear una tarjeta temporal*/
+    const tarjetaTemporal = document.createElement('temp');
+    tarjetaTemporal.className = `lote-card estado-${estado}`;
+    tarjetaTemporal.dataset.estado = estado; 
+    tarjetaTemporal.href = 'sigiaLoteDetalle.html?lote='.concat(encodeURIComponent(nombre));
+
+    tarjetaTemporal.innerHTML = `
         <div class="lote-title"></div>
         <div class="lote-body">
-            <div class="lote-next">Siguiente tarea: Sin asignar</div>
+            <div class="lote-next"> Siguiente tarea: Sin asginar</div>
             <div class="d-flex justify-content-between align-items-end mt-3">
-                <span class="fw-bold fs-6"><i class="bi ${ESTADOS[estado].icono} me-1"></i> ${ESTADOS[estado].label}</span>
-                <span class="lote-update">Actualización: Hoy - ${hora}</span>
+                <span class="fw-bold fs-6"><i class="bi ${estadoAtual.icono} me-1"></i>${estadoAtual.label}</span>
+                <span class="lote-update">Actualización: ${horaActual}</span>
             </div>
-        </div>`;
-    a.querySelector('.lote-title').textContent = nombre;
-    return a;
-}
+        </div>
+    `
+    const tituloTarjeta = tarjetaTemporal.querySelector('.lote-title');
+    tituloTarjeta.textContent = nombre; 
 
-// Formulario "Agregar lote"
-const modalEl = document.getElementById('modalAgregarLote');
-const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-const form = document.getElementById('formLote');
-const inNombre = document.getElementById('loteNombre');
-const inEstado = document.getElementById('loteEstado');
-const errNombre = document.getElementById('errorNombre');
-const errEstado = document.getElementById('errorEstado');
+    return tarjetaTemporal;
+};
 
-function limpiarForm() {
-    form.reset();
-    [inNombre, inEstado].forEach(i => i.classList.remove('is-invalid'));
-    errNombre.hidden = errEstado.hidden = true;
-}
+/*--Agregar lotes--*/ 
+/*TODO: Complete this code*/
+const ventanaModalAgregarLote = document.getElementById('modalAgregarLote');
+const controlVentanaModal = bootstrap.Modal.getOrCreateInstance(ventanaModalAgregarLote)
+const formularioAgregarLote = document.getElementById('formLote');
+const campoNombreLote = document.getElementById('loteNombre');
+const campoEstadoLote = document.getElementById('loteEstado');
+const mensajeErrorNombre = document.getElementById('errorNombre');
+const mensajeErrorDelEstado = document.getElementById('errorEstado');
 
-modalEl.addEventListener('shown.bs.modal', () => inNombre.focus());
-modalEl.addEventListener('hidden.bs.modal', limpiarForm);
+/*--MAIN SCRIPT--*/
+/*Actualizar botones del filtro al ejecutar script*/
+actualizarBotonesDeFiltro();
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const nombre = inNombre.value.trim().replace(/\s+/g, ' ');
-    const estado = inEstado.value;
-    let error = '';
-    if (!nombre) error = 'Escribe el nombre del lote.';
-    else if (tarjetas().some(t => t.querySelector('.lote-title').textContent.toLowerCase() === nombre.toLowerCase()))
-        error = 'Ya existe un lote con ese nombre.';
-    errNombre.textContent = error;
-    errNombre.hidden = !error;
-    inNombre.classList.toggle('is-invalid', !!error);
-    errEstado.hidden = !!estado;
-    inEstado.classList.toggle('is-invalid', !estado);
-    if (error || !estado) return;
-
-    // TODO: guardar en el backend (POST /lotes) y usar el id que devuelva
-    /lista.appendChild(crearTarjeta(nombre, estado));
-    filtroActual = 'todos';
-    actualizar();
-    modal.hide();
+/*Add event listener*/
+botonesFiltros.forEach(function (boton){
+    boton.addEventListener('click', function() {
+        seleccionarFiltro(boton);
+    });
 });
-
-actualizar();

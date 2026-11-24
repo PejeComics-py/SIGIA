@@ -13,23 +13,23 @@
         <div class="row w-100 justify-content-center">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5 px-0 px-md-3">
                 <div class="card border-0 shadow-sm min-vh-100 min-vh-md-auto rounded-0 rounded-md-4 overflow-hidden position-relative bg-white pb-5">
+                    <!--MAIN DIV-->
                     <div class="card-body flex-grow-0 pt-4 px-4 text-center">
                         <h1 class="text-sigia-blue fw-bold fs-2 mb-4">Insumos</h1>                       
                         <div class="input-group mb-3 rounded-pill border shadow-sm overflow-hidden px-2 bg-white">
                             <span class="input-group-text bg-white border-0 text-secondary"><i class="bi bi-search"></i></span>
                             <input type="text" class="form-control border-0 ps-1 py-2 text-secondary" placeholder="Buscar...">
                         </div>
-
+                    <!--FILTER-->
                         <div class="d-flex gap-2 overflow-x-auto pb-2 scroll-hidden text-nowrap">
                             <span class="badge bg-sigia-green rounded-pill px-3 py-2 fs-6"><i class="bi bi-star-fill me-1"></i> Label</span>
                             <span class="badge bg-sigia-green rounded-pill px-3 py-2 fs-6"><i class="bi bi-star-fill me-1"></i> Label</span>
                             <span class="badge bg-sigia-green rounded-pill px-3 py-2 fs-6"><i class="bi bi-star-fill me-1"></i> Label</span>
                         </div>
                     </div>
-
+                    <!--MAIN Registries-->
                     <div class="px-4">
                         <h3 class="text-sigia-blue fw-bold fs-4 mb-3">Registros</h3>
-                        
                         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
                             <div class="table-responsive">
                                 <table class="table table-borderless align-middle mb-0 text-center" style="table-layout: fixed; width: 100%;">
@@ -62,6 +62,7 @@
                         </div>
                     </div>
 
+                    <!--Button to register new inputs-->
                     <div class="position-absolute bottom-0 end-0 mb-5 me-4 pb-4">
                         <button class="btn btn-sigia-fab" data-bs-toggle="modal" data-bs-target="#modalRegistrarInsumo" title="Registrar nuevo insumo">
                             <i class="bi bi-plus fs-2"></i>
@@ -71,7 +72,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalRegistrarInsumo" tabindex="-1" aria-labelledby="modalRegistrarInsumoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered px-4">
             <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -138,7 +138,7 @@
                             <i class="bi bi-house-door d-block fs-4"></i>
                             <span class="small fw-bold">Home</span>
                         </a>
-                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTasks.html">
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTareas.html">
                             <i class="bi bi-calendar-check d-block fs-4"></i>
                             <span class="small fw-bold">Tareas</span>
                         </a>

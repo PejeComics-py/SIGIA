@@ -45,14 +45,17 @@
 .form-sigia label { color: var(--sigia-blue); font-weight: 700; }
 .form-sigia .form-control, .form-sigia .form-select {
     border-color: rgba(22, 85, 140, 0.5);
+    color:var(--sigia-blue);
     border-radius: 20px;
     font-size: 0.85rem;
 }
+
 .form-sigia .form-control::placeholder { color: rgba(22, 85, 140, 0.5); }
 .form-sigia .form-control:focus, .form-sigia .form-select:focus {
     border-color: var(--sigia-green);
     box-shadow: 0 0 0 0.2rem rgba(136, 191, 80, 0.25);
 }
+
 .btn-sigia-solid {
     background-color: var(--sigia-green);
     color: #fff;

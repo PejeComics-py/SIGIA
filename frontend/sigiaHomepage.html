@@ -43,48 +43,74 @@
                             <a href="#" class="text-sigia-blue small fw-semibold text-decoration-none" style="opacity:0.7;">Ver todas</a>
                         </div>
                         <div class="d-flex gap-3 overflow-x-auto py-3 px-2 mb-4 scroll-hidden">
-													<!-- Tarjeta 1 -->
-                            <div class="card card-tarea flex-shrink-0 d-flex flex-column justify-content-between fs-5" style="min-width: 170px;">
+							<!-- Tarjeta 1 -->
+                            <a href="sigiaTareas.html" class="card card-tarea flex-shrink-0 d-flex flex-column justify-content-between fs-5" style="min-width: 170px;">
                                 <div class="fw-bold text-sigia-blue small mb-1">Fertilizante Lote A</div>
                                 <div class="text-sigia-blue" style="font-size: 0.75rem;">Aplicar fertilizante a lote A</div>
                                 <div class="text-sigia-blue fw-semibold mt-2" style="font-size: 0.75rem;">Hoy · 10:00 a.m.</div>
-                            </div>
-													<!-- Tarjeta 2 -->
-                            <div class="card card-tarea flex-shrink-0 d-flex flex-column justify-content-between fs-5" style="min-width: 170px;">
+                            </a>
+                          
+							<!-- Tarjeta 2 -->
+                            <a href="sigiaTareas.html" class="card card-tarea flex-shrink-0 d-flex flex-column justify-content-between fs-5" style="min-width: 170px;">
                                 <div class="fw-bold text-sigia-blue small mb-1">Fertilizante Lote B</div>
                                 <div class="text-sigia-blue" style="font-size: 0.75rem;">Aplicar fertilizante a lote B</div>
                                 <div class="text-sigia-blue fw-semibold mt-2" style="font-size: 0.75rem;">Hoy · 03:00 p.m.</div>
-                            </div>
+                            </a>
                         </div>
 
                         <!-- Estado lotes -->
                         <h3 class="text-sigia-blue fw-bold fs-5 mb-2 text-start">Estado lotes</h3>
-                        <div class="d-flex flex-column gap-2">
-                            <div class="card card-lote riesgo p-3 d-flex flex-row justify-content-between align-items-center">
-                                <div class="text-start">
-                                    <div class="fw-bold">Lote A</div>
-                                    <div class="small">Etapa: Poda</div>
+                        <div id="listaLotes" class="d-flex flex-column gap-3 p-3">
+                            <a class="lote-card estado-riesgo" data-estado="riesgo" href="sigiaLoteDetalle.html?lote=A">
+                                <div class="lote-title">Lote A</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-exclamation-triangle me-1"></i> Riesgo</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
                                 </div>
-                                <div class="text-end small fw-semibold">
-                                    Estado: Riesgo <i class="bi bi-exclamation-triangle-fill ms-1"></i>
+                            </a>
+
+                            <a class="lote-card estado-optimo" data-estado="optimo" href="sigiaLoteDetalle.html?lote=B">
+                                <div class="lote-title">Lote B</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-check-circle me-1"></i> Óptimo</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card card-lote optimo p-3 d-flex flex-row justify-content-between align-items-center">
-                                <div class="text-start">
-                                    <div class="fw-bold">Lote B</div>
-                                    <div class="small">Etapa: Cosecha</div>
+                            </a>
+
+                            <a class="lote-card estado-atencion" data-estado="atencion" href="sigiaLoteDetalle.html?lote=C">
+                                <div class="lote-title">Lote C</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-slash-circle me-1"></i> Atención</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
                                 </div>
-                                <div class="text-end small fw-semibold">
-                                    Estado: Óptimo
+                            </a>
+
+                            <a class="lote-card estado-atencion" data-estado="atencion" href="sigiaLoteDetalle.html?lote=D">
+                                <div class="lote-title">Lote D</div>
+                                <div class="lote-body">
+                                    <div class="lote-next">Siguiente tarea: Podar</div>
+                                    <div class="d-flex justify-content-between align-items-end mt-3">
+                                        <span class="fw-bold fs-6"><i class="bi bi-slash-circle me-1"></i> Atención</span>
+                                        <span class="lote-update">Actualización: Hoy - 12:00 p.m</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <!--NAGEVACIÓN INFERIOR-->
     <div class="bg-white border-top shadow w-100 position-sticky bottom-0 z-3">
         <div class="container-fluid">
             <div class="row justify-content-center">
@@ -94,7 +120,7 @@
                             <i class="bi bi-house-door-fill d-block fs-4"></i>
                             <span class="small fw-bold">Home</span>
                         </a>
-                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTasks.html">
+                        <a class="nav-link nav-link-sigia py-2 text-center" href="sigiaTareas.html">
                             <i class="bi bi-calendar-check d-block fs-4"></i>
                             <span class="small fw-bold">Tareas</span>
                         </a>
